@@ -8,6 +8,12 @@ pub const OpCode = enum(u8) {
     SUB,
     MUL,
     DIV,
+    // reg[a] compare reg[b]
+    EQ,
+    LT,
+    LE,
+    GT,
+    GE,
     // reg[a] = reg[b]
     MOV,
     // return reg[a]

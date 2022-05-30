@@ -52,6 +52,36 @@ pub const VirtualMachine = struct {
                     self.registers[a] /= self.registers[b];
                     std.log.debug("x{} /= x{}", .{ a, b });
                 },
+                .EQ => {
+                    const a = self.load_u8(code);
+                    const b = self.load_u8(code);
+                    self.registers[a] = @boolToInt(self.registers[a] == self.registers[b]);
+                    std.log.debug("x{} = x{} == x{}", .{ a, a, b });
+                },
+                .LT => {
+                    const a = self.load_u8(code);
+                    const b = self.load_u8(code);
+                    self.registers[a] = @boolToInt(self.registers[a] < self.registers[b]);
+                    std.log.debug("x{} = x{} < x{}", .{ a, a, b });
+                },
+                .LE => {
+                    const a = self.load_u8(code);
+                    const b = self.load_u8(code);
+                    self.registers[a] = @boolToInt(self.registers[a] <= self.registers[b]);
+                    std.log.debug("x{} = x{} <= x{}", .{ a, a, b });
+                },
+                .GT => {
+                    const a = self.load_u8(code);
+                    const b = self.load_u8(code);
+                    self.registers[a] = @boolToInt(self.registers[a] > self.registers[b]);
+                    std.log.debug("x{} = x{} > x{}", .{ a, a, b });
+                },
+                .GE => {
+                    const a = self.load_u8(code);
+                    const b = self.load_u8(code);
+                    self.registers[a] = @boolToInt(self.registers[a] >= self.registers[b]);
+                    std.log.debug("x{} = x{} >= x{}", .{ a, a, b });
+                },
                 .MOV => {
                     const a = self.load_u8(code);
                     const b = self.load_u8(code);
@@ -103,5 +133,35 @@ test "arithmetic" {
         @enumToInt(OpCode.RET), 0x00,
     };
     var vm = VirtualMachine.init();
-    try std.testing.expect(vm.execute(&code) == 2);
+    try std.testing.expectEqual(vm.execute(&code), 2);
+}
+
+test "logic equal" {
+    const code = [_]u8{
+        // load x0 0x01
+        @enumToInt(OpCode.LOADI), 0x00, 0x01, 0x00,                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        // load x1 0x02
+        @enumToInt(OpCode.LOADI), 0x01, 0x02, 0x00,                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        // eq x0 x1
+        @enumToInt(OpCode.EQ),    0x00, 0x01,
+        // return x0
+        @enumToInt(OpCode.RET), 0x00,
+    };
+    var vm = VirtualMachine.init();
+    try std.testing.expectEqual(vm.execute(&code), 0);
+}
+
+test "logic less equal" {
+    const code = [_]u8{
+        // load x0 0x01
+        @enumToInt(OpCode.LOADI), 0x00, 0x01, 0x00,                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        // load x1 0x02
+        @enumToInt(OpCode.LOADI), 0x01, 0x02, 0x00,                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        // eq x0 x1
+        @enumToInt(OpCode.LE),    0x00, 0x01,
+        // return x0
+        @enumToInt(OpCode.RET), 0x00,
+    };
+    var vm = VirtualMachine.init();
+    try std.testing.expectEqual(vm.execute(&code), 1);
 }

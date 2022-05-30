@@ -17,7 +17,3 @@ pub fn main() anyerror!void {
     const result = vm.execute(&code);
     std.log.debug("result {}", .{result});
 }
-
-test "basic test" {
-    try std.testing.expectEqual(OpCode.LOADI, @intToEnum(OpCode, 1));
-}

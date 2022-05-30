@@ -133,7 +133,7 @@ test "arithmetic" {
         @enumToInt(OpCode.RET), 0x00,
     };
     var vm = VirtualMachine.init();
-    try std.testing.expectEqual(vm.execute(&code), 2);
+    try std.testing.expectEqual(@as(u64, 2), vm.execute(&code));
 }
 
 test "logic equal" {
@@ -148,7 +148,7 @@ test "logic equal" {
         @enumToInt(OpCode.RET), 0x00,
     };
     var vm = VirtualMachine.init();
-    try std.testing.expectEqual(vm.execute(&code), 0);
+    try std.testing.expectEqual(@as(u64, 0), vm.execute(&code));
 }
 
 test "logic less equal" {
@@ -163,5 +163,5 @@ test "logic less equal" {
         @enumToInt(OpCode.RET), 0x00,
     };
     var vm = VirtualMachine.init();
-    try std.testing.expectEqual(vm.execute(&code), 1);
+    try std.testing.expectEqual(@as(u64, 1), vm.execute(&code));
 }

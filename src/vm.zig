@@ -78,3 +78,31 @@ pub const VirtualMachine = struct {
         return mem.readIntSliceNative(u64, b[self.pc - 8 .. self.pc]);
     }
 };
+
+test "arithmetic" {
+    const code = [_]u8{
+        // load x0 0x01
+        @enumToInt(OpCode.LOADI), 0x00, 0x01,                   0x00,                   0x00, 0x00, 0x00,                     0x00, 0x00, 0x00,
+        // load x1 0x02
+        @enumToInt(OpCode.LOADI), 0x01, 0x02,                   0x00,                   0x00, 0x00, 0x00,                     0x00, 0x00, 0x00,
+        // add x0 x1
+        @enumToInt(OpCode.ADD),   0x00, 0x01,
+        // mul x0 x0
+                          @enumToInt(OpCode.MUL), 0x00, 0x00,
+        // load x1 0x03
+        @enumToInt(OpCode.LOADI), 0x01, 0x03, 0x00,
+        0x00,                     0x00, 0x00,                   0x00,                   0x00, 0x00,
+        // div x0 x1
+        @enumToInt(OpCode.DIV),   0x00, 0x01,
+        // load x1 0x01
+        @enumToInt(OpCode.LOADI),
+        0x01,                     0x01, 0x00,                   0x00,                   0x00, 0x00, 0x00,                     0x00, 0x00,
+        // sub x0 x1
+        @enumToInt(OpCode.SUB),
+        0x00,                     0x01,
+        // return x0
+        @enumToInt(OpCode.RET), 0x00,
+    };
+    var vm = VirtualMachine.init();
+    try std.testing.expect(vm.execute(&code) == 2);
+}

@@ -26,14 +26,32 @@ pub const VirtualMachine = struct {
                 .LOADI => {
                     const a = self.load_u8(code);
                     const r = self.load_u64(code);
-                    std.log.debug("x{} = int({})", .{ a, r });
                     reg[a] = r;
+                    std.log.debug("x{} = int({})", .{ a, r });
                 },
                 .ADD => {
                     const a = self.load_u8(code);
                     const b = self.load_u8(code);
                     reg[a] += reg[b];
                     std.log.debug("x{} += x{}", .{ a, b });
+                },
+                .SUB => {
+                    const a = self.load_u8(code);
+                    const b = self.load_u8(code);
+                    reg[a] -= reg[b];
+                    std.log.debug("x{} -= x{}", .{ a, b });
+                },
+                .MUL => {
+                    const a = self.load_u8(code);
+                    const b = self.load_u8(code);
+                    reg[a] *= reg[b];
+                    std.log.debug("x{} *= x{}", .{ a, b });
+                },
+                .DIV => {
+                    const a = self.load_u8(code);
+                    const b = self.load_u8(code);
+                    reg[a] /= reg[b];
+                    std.log.debug("x{} /= x{}", .{ a, b });
                 },
                 .MOV => {
                     const a = self.load_u8(code);

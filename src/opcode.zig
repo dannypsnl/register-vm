@@ -18,4 +18,6 @@ pub const OpCode = enum(u8) {
     MOV,
     // return reg[a]
     RET,
+    // Jump to code offset
+    JMP,
 };

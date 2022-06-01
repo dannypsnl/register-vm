@@ -5,7 +5,6 @@ const OpCode = @import("opcode.zig").OpCode;
 pub const VirtualMachine = struct {
     const Self = @This();
     pc: usize,
-    // internal
     registers: [30]u64,
 
     pub fn init() Self {
@@ -93,6 +92,11 @@ pub const VirtualMachine = struct {
                     std.log.debug("ret x{}", .{a});
                     return self.registers[a];
                 },
+                .JMP => {
+                    const a = self.load_u64(code);
+                    std.log.debug("JMP {}", .{a});
+                    self.pc = @as(usize, a);
+                },
             }
         }
     }
@@ -164,4 +168,21 @@ test "logic less equal" {
     };
     var vm = VirtualMachine.init();
     try std.testing.expectEqual(@as(u64, 1), vm.execute(&code));
+}
+
+test "jump" {
+    const code = [_]u8{
+        // jmp to 19(LOAD x0 0x02)
+        @enumToInt(OpCode.JMP),   0x13,                     0x00,                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        // load x0 0x01
+        @enumToInt(OpCode.LOADI), 0x00,                     0x01,                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00,
+        // load x0 0x02
+                            @enumToInt(OpCode.LOADI), 0x00,                   0x02, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00,                     0x00,
+        // return x0
+                            @enumToInt(OpCode.RET), 0x00,
+    };
+    var vm = VirtualMachine.init();
+    try std.testing.expectEqual(@as(u64, 2), vm.execute(&code));
 }

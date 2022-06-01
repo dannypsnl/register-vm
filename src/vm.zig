@@ -92,7 +92,7 @@ pub const VirtualMachine = struct {
                     std.log.debug("ret x{}", .{a});
                     return self.registers[a];
                 },
-                .JMP => {
+                .JMPI => {
                     const a = self.load_u64(code);
                     std.log.debug("JMP {}", .{a});
                     self.pc = @as(usize, a);
@@ -172,8 +172,8 @@ test "logic less equal" {
 
 test "jump" {
     const code = [_]u8{
-        // jmp to 19(LOAD x0 0x02)
-        @enumToInt(OpCode.JMP),   0x13,                     0x00,                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        // JMPI to 19(LOAD x0 0x02)
+        @enumToInt(OpCode.JMPI),  0x13,                     0x00,                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         // load x0 0x01
         @enumToInt(OpCode.LOADI), 0x00,                     0x01,                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00,

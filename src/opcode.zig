@@ -18,6 +18,6 @@ pub const OpCode = enum(u8) {
     MOV,
     // return reg[a]
     RET,
-    // Jump to code offset
-    JMP,
+    // JMPI immediate_int64, Jump to code offset provided by immediate value
+    JMPI,
 };
